@@ -146,11 +146,11 @@ public class LinearRegression_GradientDescent_Aimo extends Classifier {
 
     public static void main(String[] args) {
         try {
-            String path = "C:\\Users\\Aimo\\Documents\\My_test_data\\Regression36\\fruitfly.arff";
+            String path = "C:\\Users\\Aimo\\Documents\\My_test_data\\Weak_data\\iris.arff";
             Instances linear = new Instances(new BufferedReader(new FileReader(path)));
             linear.setClassIndex(linear.numAttributes() - 1);
-
             int num_attributes = linear.numAttributes();
+            System.out.println("num_attributes: " + num_attributes);
             System.out.println("class");
             System.out.println(linear.instance(0).classValue());
 
@@ -161,13 +161,13 @@ public class LinearRegression_GradientDescent_Aimo extends Classifier {
             }
 
 
-            LinearRegression_GradientDescent_Aimo linearRegression = new LinearRegression_GradientDescent_Aimo();
-            linearRegression.buildClassifier(linear);
-
-            System.out.println("wb");
-            for (int i = 0; i < num_attributes; i++) {
-                System.out.println(linearRegression.Wb[i]);
-            }
+//            LinearRegression_GradientDescent_Aimo linearRegression = new LinearRegression_GradientDescent_Aimo();
+//            linearRegression.buildClassifier(linear);
+//
+//            System.out.println("wb");
+//            for (int i = 0; i < num_attributes; i++) {
+//                System.out.println(linearRegression.Wb[i]);
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();
