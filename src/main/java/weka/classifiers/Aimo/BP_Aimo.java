@@ -22,6 +22,7 @@ public class BP_Aimo extends Classifier {
 
     private int hidden_size = 6;                // 隐藏层节点个数
 
+
     private Matrix input;
     private Matrix hidden;
     private Matrix output;
@@ -31,8 +32,8 @@ public class BP_Aimo extends Classifier {
     private Matrix outDelta;
 
     private double eta = 0.2;                // 学习率
-    private double omiga = 0.2;
-    private int iteration = 500;            // 迭代次数
+    private double omiga = 0.3;
+    private int iteration = 600;            // 迭代次数
 
     private Matrix iptHidWeights;
     private Matrix hidOptWeights;
@@ -87,15 +88,8 @@ public class BP_Aimo extends Classifier {
         //开始训练
         for (int iter = 0; iter <= iteration; iter++) {
             for (int i = 0; i < Num_Instances; i++) {
-                for (int j = 1; j <= Num_Classes; j++) {
-                    if (Set_Instances.instance(i).classValue() == j - 1)
-                        target.set(j, 0, 1);
-                    else
-                        target.set(j, 0, 0);
-                    for (int k = 0; k < Num_Attributes; k++) {
-                        input.set(k + 1, 0, Set_Instances.instance(i).value(k));
-                    }
-                }
+                loadtarget(target, Set_Instances.instance(i));
+                loaddata(input, Set_Instances.instance(i));
                 train(input, target);
             }
         }
@@ -110,24 +104,16 @@ public class BP_Aimo extends Classifier {
         m_MissingFilter.batchFinished();
         transformedInstance = m_MissingFilter.output();
 
-        for (int i = 1; i < Num_Attributes + 1; i++) {
-            input.set(i, 0, transformedInstance.value(i - 1));
-        }
+        loaddata(input, transformedInstance);
         forward();
         return getNetworkOutput();
     }
 
-
-    /**
-     * 随机初始化权重矩阵
-     *
-     * @param weights 权重矩阵
-     */
     private void randomizeWeights(Matrix weights) {
         //矩阵扩张一个维度
         for (int i = 0; i < weights.getRowDimension(); i++) {
             if (i == 0) {
-                weights.set(i, 0, 0);
+                weights.set(i, 0, 1);
             } else {
                 weights.set(i, 0, 0);
             }
@@ -190,7 +176,6 @@ public class BP_Aimo extends Classifier {
         hiddenErr();
     }
 
-
     private void updateWeights(Matrix delta, Matrix layer, Matrix weights, Matrix prevWeights) {
         layer.set(0, 0, 1d);
         for (int i = 1, len = delta.getRowDimension(); i != len; ++i) {
@@ -203,9 +188,8 @@ public class BP_Aimo extends Classifier {
     }
 
     private void updateWeights() {
-        updateWeights(outDelta, hidden, hidOptWeights, hidOptPrevUptWeights);
         updateWeights(hidDelta, input, iptHidWeights, iptHidPrevUptWeights);
-
+        updateWeights(outDelta, hidden, hidOptWeights, hidOptPrevUptWeights);
     }
 
     private void train(Matrix input, Matrix target) {
@@ -214,6 +198,21 @@ public class BP_Aimo extends Classifier {
         forward();
         calculateDelta();
         updateWeights();
+    }
+
+    private void loaddata(Matrix A, Instance data) {
+        for (int i = 0; i < Num_Attributes; i++) {
+            A.set(i + 1, 0, data.value(i));
+        }
+    }
+
+    private void loadtarget(Matrix A, Instance data) {
+        for (int i = 0; i < Num_Classes; i++) {
+            if (data.classValue() == i)
+                A.set(i + 1, 0, 1);
+            else
+                A.set(i + 1, 0, 0);
+        }
     }
 
     private int find_max_idx(double[] arr) {
@@ -229,13 +228,14 @@ public class BP_Aimo extends Classifier {
     }
 
     private double[] getNetworkOutput() {
-        int len = output.getRowDimension();
-        double[] result = new double[len - 1];
-        for (int i = 1; i != len; i++) {
+        double[] result = new double[Num_Classes];
+        for (int i = 1; i != Num_Classes + 1; i++) {
             result[i - 1] = output.get(i, 0);
         }
+
+        int max_idx = find_max_idx(result);
         for (int i = 0; i < result.length; i++) {
-            if (i == find_max_idx(result)) {
+            if (i == max_idx) {
                 result[i] = 1;
             } else {
                 result[i] = 0;
@@ -260,10 +260,8 @@ public class BP_Aimo extends Classifier {
                 System.out.println(linear.instance(0).value(i));
             }
 
-
             BP_Aimo bp = new BP_Aimo();
             bp.buildClassifier(linear);
-
 
         } catch (Exception e) {
             e.printStackTrace();
