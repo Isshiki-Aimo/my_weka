@@ -31,7 +31,7 @@ public class BP_Aimo extends Classifier {
     private Matrix hidDelta;
     private Matrix outDelta;
 
-    private double eta = 0.2;                // 学习率
+    private double eta = 0.1;                // 学习率
     private double omiga = 0.3;
     private int iteration = 600;            // 迭代次数
 
