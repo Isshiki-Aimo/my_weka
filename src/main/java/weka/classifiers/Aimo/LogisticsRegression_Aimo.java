@@ -75,7 +75,7 @@ public class LogisticsRegression_Aimo extends Classifier {
         double alpha;
         for (int i = 0; i < item; i++) {
             Matrix grad;
-            alpha = 4 / (1.0 + i) + 0.0001;
+            alpha = 2 / (1.0 + i) + 0.0001;
             Matrix error = data.times(W);
             for (int k = 0; k < num_instance; k++) {
                 error.set(k, 0, sigmoid(error.get(k, 0)) - label.get(k, 0));
@@ -85,10 +85,9 @@ public class LogisticsRegression_Aimo extends Classifier {
             for (int k = 0; k < num_attribute; k++) {
                 sum_grad += grad.get(k, 0);
             }
-            if (sum_grad < value) {
+            if (Math.abs(sum_grad) < value) {
                 break;
             }
-
             W = W.minus(grad.times(alpha / num_instance));
         }
         w = new double[num_attribute];
