@@ -152,13 +152,11 @@ public class LinearRegression_GradientDescent_Aimo extends Classifier {
             int num_attributes = linear.numAttributes();
             System.out.println("num_attributes: " + num_attributes);
             System.out.println("class");
-            System.out.println(linear.instance(0).classValue());
+            System.out.println(linear.instance(100).classValue());
+            System.out.println(linear.classIndex());
 
 
-            System.out.println("index value");
-            for (int i = 0; i < num_attributes; i++) {
-                System.out.println(linear.instance(0).value(i));
-            }
+
 
 
 //            LinearRegression_GradientDescent_Aimo linearRegression = new LinearRegression_GradientDescent_Aimo();

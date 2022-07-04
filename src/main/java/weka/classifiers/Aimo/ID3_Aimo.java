@@ -7,10 +7,10 @@ import weka.classifiers.Classifier;
 import weka.core.*;
 import weka.core.Capabilities.Capability;
 
-public class ID3 extends Classifier {
+public class ID3_Aimo extends Classifier {
 
     //子节点
-    private ID3[] children;
+    private ID3_Aimo[] children;
 
     //用于划分的属性
     private Attribute splitAttribute;
@@ -89,9 +89,9 @@ public class ID3 extends Classifier {
             } else {
                 //在此节点下创建树
                 Instances[] splitData = splitData(data, splitAttribute);
-                children = new ID3[splitAttribute.numValues()];
+                children = new ID3_Aimo[splitAttribute.numValues()];
                 for (int j = 0; j < splitAttribute.numValues(); j++) {
-                    children[j] = new ID3();
+                    children[j] = new ID3_Aimo();
                     children[j].makeTree(splitData[j]);
                 }
             }

@@ -285,7 +285,6 @@ public class BP {
     /**
      * Sigmoid.
      *
-     * @param val
      * @return
      */
     private double sigmoid(double val) {

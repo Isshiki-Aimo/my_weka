@@ -22,6 +22,8 @@ public class BP_Aimo extends Classifier {
 
     private int hidden_size = 6;                // 隐藏层节点个数
 
+    private int class_index;
+
 
     private Matrix input;
     private Matrix hidden;
@@ -62,6 +64,7 @@ public class BP_Aimo extends Classifier {
         Num_Attributes = Set_Instances.numAttributes() - 1;
         Num_Instances = Set_Instances.numInstances();
         Num_Classes = Set_Instances.numClasses();
+        class_index = Set_Instances.classIndex();
 
 
         // 初始化输入层、隐藏层、输出层、目标层
@@ -202,7 +205,13 @@ public class BP_Aimo extends Classifier {
 
     private void loaddata(Matrix A, Instance data) {
         for (int i = 0; i < Num_Attributes; i++) {
-            A.set(i + 1, 0, data.value(i));
+            if(i !=class_index){
+                A.set(i + 1, 0, data.value(i));
+            }
+            else{
+                i--;
+            }
+
         }
     }
 
