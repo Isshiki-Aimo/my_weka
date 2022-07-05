@@ -7,12 +7,8 @@ import weka.core.matrix.Matrix;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
-import java.util.Set;
 
 
 public class SMO_Aimo extends Classifier {
@@ -47,6 +43,7 @@ public class SMO_Aimo extends Classifier {
     private int Num_Attributes;              // 属性个数
     private int Num_Instances;              // 实例个数
     private int Num_Classes;                // 类别个数
+    private double gamma = 0.08;
     Matrix test;
     Matrix b;
 
@@ -149,7 +146,7 @@ public class SMO_Aimo extends Classifier {
             }
         }
 
-    //如果有不为0的Ei，则从中选取最大的Ej
+        //如果有不为0的Ei，则从中选取最大的Ej
         if (validEcacheList.size() > 1) {
             for (int k = 0; k < validEcacheList.size(); k++) {
                 if (validEcacheList.get(k) == i) {
@@ -239,7 +236,7 @@ public class SMO_Aimo extends Classifier {
                     (oS.alpha.get(i, 0) - alphaIold) *
                     (oS.X.getMatrix(i, i, 0, oS.X.getColumnDimension() - 1).
                             times(oS.X.getMatrix(i, i, 0, oS.X.getColumnDimension() - 1).transpose()).get(0, 0))
-                    - oS.label.get(j, 0) * (oS.alpha.get(j, 0) - alphaIold) *
+                    - oS.label.get(j, 0) * (oS.alpha.get(j, 0) - alphaJold) *
                     (oS.X.getMatrix(i, i, 0, oS.X.getColumnDimension() - 1).
                             times(oS.X.getMatrix(j, j, 0, oS.X.getColumnDimension() - 1).transpose()).get(0, 0));
 
@@ -248,7 +245,7 @@ public class SMO_Aimo extends Classifier {
                     (oS.alpha.get(i, 0) - alphaIold) *
                     (oS.X.getMatrix(i, i, 0, oS.X.getColumnDimension() - 1).
                             times(oS.X.getMatrix(j, j, 0, oS.X.getColumnDimension() - 1).transpose()).get(0, 0))
-                    - oS.label.get(j, 0) * (oS.alpha.get(j, 0) - alphaIold) *
+                    - oS.label.get(j, 0) * (oS.alpha.get(j, 0) - alphaJold) *
                     (oS.X.getMatrix(j, j, 0, oS.X.getColumnDimension() - 1).
                             times(oS.X.getMatrix(j, j, 0, oS.X.getColumnDimension() - 1).transpose()).get(0, 0));
 
@@ -295,7 +292,7 @@ public class SMO_Aimo extends Classifier {
             if (entireSet)
                 entireSet = false;
             else if (alphaPairsChanged == 0) //如果是在非边界上，并且α更新过。则entireSet还是False,
-                // 下一次还是在非边界上进行遍历。可以认为这里是倾向于非边界遍历，因为非边界遍历的样本更符合内循环中的违反KKT条件
+            // 下一次还是在非边界上进行遍历。可以认为这里是倾向于非边界遍历，因为非边界遍历的样本更符合内循环中的违反KKT条件
             {
                 entireSet = true;
             }
@@ -310,6 +307,7 @@ public class SMO_Aimo extends Classifier {
         }
         return w;
     }
+
 
     private double[] classify(Matrix X, Matrix ws, Matrix b) {
         Matrix prob;
