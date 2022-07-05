@@ -13,13 +13,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class LinearRegression_Aimo extends Classifier{
+public class LinearRegression_Aimo extends Classifier {
 
     // 数据成员
-    private double[] Wb;				// 参数数组
-    private Instances Set_Instances;		// 实例集合
-    private int Num_Attributes;				// 属性个数
-    private int Num_Instances;			// 实例个数
+    private double[] Wb;                // 参数数组
+    private Instances Set_Instances;        // 实例集合
+    private int Num_Attributes;                // 属性个数
+    private int Num_Instances;            // 实例个数
 
     private ReplaceMissingValues m_MissingFilter; // 数据预处理需要的过滤器
 
@@ -41,13 +41,13 @@ public class LinearRegression_Aimo extends Classifier{
 
         // 矩阵初始化
         Matrix Matrix_X = new Matrix(Num_Instances, Num_Attributes);
-        Matrix Matrix_Y = new Matrix(Num_Instances,1);
-        for(int i = 0; i< Num_Instances; i++) {
+        Matrix Matrix_Y = new Matrix(Num_Instances, 1);
+        for (int i = 0; i < Num_Instances; i++) {
             Matrix_Y.set(i, 0, Set_Instances.instance(i).classValue());
-            for(int j = 0; j< Num_Attributes -1; j++) {
+            for (int j = 0; j < Num_Attributes - 1; j++) {
                 Matrix_X.set(i, j, Set_Instances.instance(i).value(j));
             }
-            Matrix_X.set(i, Num_Attributes -1, 1);
+            Matrix_X.set(i, Num_Attributes - 1, 1);
         }
         // 最小二乘法求解
         boolean success = true;
@@ -62,13 +62,12 @@ public class LinearRegression_Aimo extends Classifier{
             try {
                 solution = X_Xt.solve(X_Y);
                 success = true;
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 LambdaI *= 10;
                 success = false;
             }
         } while (!success);
-        for(int i = 0; i< Num_Attributes; i++) {
+        for (int i = 0; i < Num_Attributes; i++) {
             Wb[i] = solution.get(i, 0);
         }
     }
@@ -85,10 +84,10 @@ public class LinearRegression_Aimo extends Classifier{
 
         // 计算最终结果
         double temp = 0;
-        for(int i = 0; i< Num_Attributes -1; i++) {
+        for (int i = 0; i < Num_Attributes - 1; i++) {
             temp += Wb[i] * transformedInstance.value(i);
         }
-        temp += Wb[Num_Attributes -1];
+        temp += Wb[Num_Attributes - 1];
         return temp;
     }
 
@@ -112,9 +111,7 @@ public class LinearRegression_Aimo extends Classifier{
             }
             System.out.println("predict");
             System.out.println(linearRegression.classifyInstance(linear.instance(0)));
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

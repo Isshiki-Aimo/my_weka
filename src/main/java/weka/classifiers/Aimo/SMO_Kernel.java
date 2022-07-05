@@ -7,12 +7,10 @@ import weka.core.Instances;
 import weka.core.matrix.Matrix;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
-import weka.gui.treevisualizer.PlaceNode1;
 
-import java.util.ArrayList;
 import java.util.Random;
 
-public class sb extends Classifier {
+public class SMO_Kernel extends Classifier {
     /**
      * 惩罚因子
      */
@@ -121,8 +119,8 @@ public class sb extends Classifier {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
 //                kernel[i][j] = Gaussian(dotDache, i, j);
-//                kernel[i][j] = Polynomial(dotDache, i, j);
-                kernel[i][j] = Linear(dotDache, i, j);
+                kernel[i][j] = Polynomial(dotDache, i, j);
+//                kernel[i][j] = Linear(dotDache, i, j);
             }
         }
         train();

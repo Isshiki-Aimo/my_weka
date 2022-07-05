@@ -6,6 +6,8 @@ import java.util.Enumeration;
 import weka.classifiers.Classifier;
 import weka.core.*;
 import weka.core.Capabilities.Capability;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 
 public class ID3_Aimo extends Classifier {
 
@@ -21,6 +23,9 @@ public class ID3_Aimo extends Classifier {
 
     // 类属性
     private Attribute classAttribute;
+
+    private Instances Set_Instances;        // 实例集合
+    private ReplaceMissingValues m_MissingFilter; // 数据预处理需要的过滤器
 
     public Capabilities getCapabilities() {
         Capabilities result = super.getCapabilities();
@@ -42,14 +47,24 @@ public class ID3_Aimo extends Classifier {
 
     public void buildClassifier(Instances data) throws Exception {
 
+        // 备份数据（防止更改原训练数据）
+        Set_Instances = new Instances(data);
+
+        // 先做数据预处理（填充缺失值）
+        m_MissingFilter = new ReplaceMissingValues();
+        m_MissingFilter.setInputFormat(Set_Instances);
+        Set_Instances = Filter.useFilter(Set_Instances, m_MissingFilter);
+        // 删除没有监督信息的实例
+        Set_Instances.deleteWithMissingClass();
+
         // 检测是否可以创建分类器
-        getCapabilities().testWithFail(data);
+        getCapabilities().testWithFail(Set_Instances);
 
         // 删除缺少类的实例
-        data = new Instances(data);
-        data.deleteWithMissingClass();
+        Set_Instances = new Instances(Set_Instances);
+        Set_Instances.deleteWithMissingClass();
 
-        makeTree(data);
+        makeTree(Set_Instances);
     }
 
     private void makeTree(Instances data) throws Exception {
@@ -118,15 +133,23 @@ public class ID3_Aimo extends Classifier {
     public double[] distributionForInstance(Instance instance)
             throws NoSupportForMissingValuesException {
 
-        if (instance.hasMissingValue()) {
+        // 备份数据
+        Instance transformedInstance = new Instance(instance);
+
+        // 先做预处理
+        m_MissingFilter.input(transformedInstance);
+        m_MissingFilter.batchFinished();
+        transformedInstance = m_MissingFilter.output();
+
+        if (transformedInstance.hasMissingValue()) {
             throw new NoSupportForMissingValuesException("NewID3: Cannot handle missing values");
         }
         if (splitAttribute == null) {
             System.out.println(Arrays.toString(classDistributions));
             return classDistributions;
         } else {
-            return children[(int) instance.value(splitAttribute)].
-                    distributionForInstance(instance);
+            return children[(int) transformedInstance.value(splitAttribute)].
+                    distributionForInstance(transformedInstance);
         }
     }
 

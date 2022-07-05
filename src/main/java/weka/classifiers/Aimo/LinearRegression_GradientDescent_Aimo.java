@@ -129,7 +129,6 @@ public class LinearRegression_GradientDescent_Aimo extends Classifier {
     public double classifyInstance(Instance instance) throws Exception {
         // 备份数据
         Instance transformedInstance = new Instance(instance);
-
         // 先做预处理
         m_MissingFilter.input(transformedInstance);
         m_MissingFilter.batchFinished();
@@ -161,9 +160,6 @@ public class LinearRegression_GradientDescent_Aimo extends Classifier {
             matrix.set(1, 0, 3);
             matrix.set(1, 1, 4);
             System.out.println(matrix.times(matrix.transpose()));
-
-
-
 
 
 //            LinearRegression_GradientDescent_Aimo linearRegression = new LinearRegression_GradientDescent_Aimo();
