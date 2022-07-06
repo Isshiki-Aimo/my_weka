@@ -132,20 +132,11 @@ public class ID3_Aimo extends Classifier {
 
     public double[] distributionForInstance(Instance instance)
             throws NoSupportForMissingValuesException {
-
         // 备份数据
         Instance transformedInstance = new Instance(instance);
 
-        // 先做预处理
-        m_MissingFilter.input(transformedInstance);
-        m_MissingFilter.batchFinished();
-        transformedInstance = m_MissingFilter.output();
 
-        if (transformedInstance.hasMissingValue()) {
-            throw new NoSupportForMissingValuesException("NewID3: Cannot handle missing values");
-        }
         if (splitAttribute == null) {
-            System.out.println(Arrays.toString(classDistributions));
             return classDistributions;
         } else {
             return children[(int) transformedInstance.value(splitAttribute)].

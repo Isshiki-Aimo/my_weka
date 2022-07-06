@@ -16,7 +16,7 @@ import java.util.Comparator;
 
 public class KNN_Aimo extends Classifier {
     //KNN分类器K的个数
-    private int k = 10;
+    private int k = 3;
 
     //类别数量
     private int num_classes;
